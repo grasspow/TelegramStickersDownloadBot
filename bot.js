@@ -1,19 +1,8 @@
+const config = require('./config.js');
 const TelegramBot = require('node-telegram-bot-api');
-const token = '6364904639:AAGEBbwCmExctjIll3S8CuEcaQ8IQaTIyPo';
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(config.token, { polling: true });
 const fs = require('fs-extra');
-const path = require('path');
 const archiver = require('archiver');
-
-function initDir(dir) {
-    let fspath = path.resolve(dir);
-    fs.stat(fspath, function (err, stats) {
-        if (err && err.code === 'ENOENT') {
-            fs.mkdirpSync(fspath);
-        }
-    });
-}
-
 
 async function downloadStickers(stickerSetName, downloadPath) {
     const stickerSet = await bot.getStickerSet(stickerSetName);
@@ -36,7 +25,7 @@ async function downloadStickers(stickerSetName, downloadPath) {
     }
 }
 
-async function compressFolder(chatId, folderPath, outputPath) {
+async function compressFolder(folderPath, outputPath) {
     const output = fs.createWriteStream(outputPath);
     const archive = archiver('zip', {
         zlib: { level: 5 }
@@ -54,13 +43,13 @@ async function compressFolder(chatId, folderPath, outputPath) {
     });
 }
 
-bot.onText(/https:\/\/t.me\/addstickers\/(.+)/, (msg, match) => {
+function stickersHandler(msg, match) {
     const chatId = msg.chat.id;
     var stickerSetName = match[1];
-    var stickersPath = "./storage/" + stickerSetName + "/";
+    var stickersPath = config.storage + "/" + stickerSetName + "/";
     if (downloadStickers(stickerSetName, stickersPath)) {
         bot.sendMessage(chatId, "获取成功，正在发送压缩文件。。。");
-        var stickersZipPath = "./storage/" + stickerSetName + ".zip";
+        var stickersZipPath = config.storage + "/" + stickerSetName + ".zip";
         (async () => {
             try {
                 await compressFolder(chatId, stickersPath, stickersZipPath);
@@ -72,4 +61,12 @@ bot.onText(/https:\/\/t.me\/addstickers\/(.+)/, (msg, match) => {
     } else {
         bot.sendMessage(chatId, "获取失败！我摆烂了！");
     }
+}
+
+bot.onText(/https:\/\/t.me\/addstickers\/(.+)/, (msg, match) => {
+    stickersHandler(msg, match);
+});
+
+bot.onText(/https:\/\/telegram.me\/addstickers\/(.+)/, (msg, match) => {
+    stickersHandler(msg, match);
 });

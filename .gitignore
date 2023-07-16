@@ -3,3 +3,4 @@ key.pem
 crt.pem
 TelegramStickersDownloadBot.code-workspace
 storage
+config.js
