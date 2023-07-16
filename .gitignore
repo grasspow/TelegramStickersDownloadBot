@@ -4,3 +4,4 @@ crt.pem
 TelegramStickersDownloadBot.code-workspace
 storage
 config.js
+package-lock.json
