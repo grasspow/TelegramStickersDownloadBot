@@ -52,7 +52,7 @@ function stickersHandler(msg, match) {
         var stickersZipPath = config.storage + "/" + stickerSetName + ".zip";
         (async () => {
             try {
-                await compressFolder(chatId, stickersPath, stickersZipPath);
+                await compressFolder(stickersPath, stickersZipPath);
                 bot.sendDocument(chatId, stickersZipPath);
             } catch (err) {
                 console.error('压缩失败:', err);
