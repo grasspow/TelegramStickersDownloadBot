@@ -2,5 +2,5 @@ module.exports = {
     //从@BotFather那里获取的token
     token: '1234567890:YOURTOKENHERE',
     //下载以及处理位置
-    file_storage: './storage',
+    storage: './storage',
 };
