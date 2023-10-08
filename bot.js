@@ -2,7 +2,6 @@ const config = require('./config.js');
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(config.token, { polling: true });
 const fs = require('fs-extra');
-const archiver = require('archiver');
 
 async function downloadStickers(stickerSetName, downloadPath) {
     const stickerSet = await bot.getStickerSet(stickerSetName);
@@ -25,39 +24,12 @@ async function downloadStickers(stickerSetName, downloadPath) {
     }
 }
 
-async function compressFolder(folderPath, outputPath) {
-    const output = fs.createWriteStream(outputPath);
-    const archive = archiver('zip', {
-        zlib: { level: 5 }
-    });
-    return new Promise((resolve, reject) => {
-        output.on('close', () => {
-            resolve();
-        });
-        archive.on('error', (err) => {
-            reject(err);
-        });
-        archive.pipe(output);
-        archive.directory(folderPath, false);
-        archive.finalize();
-    });
-}
-
 function stickersHandler(msg, match) {
     const chatId = msg.chat.id;
     var stickerSetName = match[1];
-    var stickersPath = config.storage + "/" + stickerSetName + "/";
+    var stickersPath = "./storage/" + stickerSetName + "/";
     if (downloadStickers(stickerSetName, stickersPath)) {
-        bot.sendMessage(chatId, "获取成功，正在发送压缩文件。。。");
-        var stickersZipPath = config.storage + "/" + stickerSetName + ".zip";
-        (async () => {
-            try {
-                await compressFolder(stickersPath, stickersZipPath);
-                bot.sendDocument(chatId, stickersZipPath);
-            } catch (err) {
-                console.error('压缩失败:', err);
-            }
-        })();
+        bot.sendMessage(chatId, "获取成功，请前往storage查看");
     } else {
         bot.sendMessage(chatId, "获取失败！我摆烂了！");
     }

@@ -1,6 +1,9 @@
 TelegramStickersDownloadBot
 ===============
-一个简单的tgbot，它会返回一个包含图片的压缩包  
+**下载图片后会崩溃的情况，作者是菜狗，js忘光光修不了了（**
+===============
+一个简单的tgbot  
+<del>它会返回一个包含图片的压缩包</del>  已经废了，返回不了了，可以去根目录找下载的贴纸  
 把贴纸包分享链接发给它即可  
 
 ### Requirements  
@@ -16,6 +19,5 @@ TelegramStickersDownloadBot
 4. `npm install && npm start`
 
 ### License
-
 MIT
 
